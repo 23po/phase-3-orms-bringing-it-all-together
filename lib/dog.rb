@@ -69,6 +69,19 @@ class Dog
         
     end
 
+    def self.find_or_create_by(name, breed)
+        sql = <<-SQL
+        SELECT * FROM dogs WHERE name =? LIMIT 1
+        SQL
+
+        if DB[:conn].execute(sql, name, breed).map {|row| self.new_from_db(row)}.first
+            row
+       else
+        self.create(name, breed)
+        
+       end
+    end
+
 
 end
 
